@@ -9,13 +9,21 @@ import { inputValidation } from "../../middlewares/input-validation";
 import { HttpResponses } from "../../const";
 import { authJwtMiddleware } from "../../middlewares/authJwt";
 import { LikeStatus } from "./enum";
+import { jwtService } from "../../services/jwt.service";
 
 export const commentsRouter = express.Router();
 
 commentsRouter.get("/:id", async (req, res) => {
   const { id } = req.params;
   const comment = await CommentModel.findById(id);
-  const userId = req.user.userId;
+
+  const token = req.headers.authorization?.split(" ")[1];
+  let userId: string | null = null;
+
+  if (token) {
+    const payload = jwtService.verifyAccessToken(token);
+    userId = payload?.userId || null;
+  }
 
   if (!comment)
     return res.status(HttpResponses.NOT_FOUND).send({
@@ -36,7 +44,8 @@ commentsRouter.get("/:id", async (req, res) => {
   return res.status(200).send({
     ...comment.toJSON(),
     likesInfo: {
-      ...comment.likesInfo,
+      likesCount: comment.likesInfo.likesCount,
+      dislikesCount: comment.likesInfo.dislikesCount,
       myStatus,
     },
   });
@@ -82,7 +91,7 @@ commentsRouter.put(
     await comment.save();
 
     return res.sendStatus(HttpResponses.NO_CONTENT);
-  }
+  },
 );
 
 commentsRouter.put(
@@ -140,14 +149,14 @@ commentsRouter.put(
       await CommentLikeModel.findOneAndUpdate(
         { commentId, userId },
         { status: likeStatus },
-        { upsert: true }
+        { upsert: true },
       );
     }
 
     await comment.save();
 
     return res.sendStatus(HttpResponses.NO_CONTENT);
-  }
+  },
 );
 
 commentsRouter.delete(
@@ -183,5 +192,5 @@ commentsRouter.delete(
     await CommentModel.findByIdAndDelete(commentId);
 
     return res.sendStatus(HttpResponses.NO_CONTENT);
-  }
+  },
 );

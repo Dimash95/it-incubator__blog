@@ -1,0 +1,14 @@
+{
+  "version": 2,
+
+  "name": "it-incubator_hw-1",
+
+  "builds": [
+    {
+      "src": "src/app.ts",
+      "use": "@vercel/node"
+    }
+  ],
+
+  "routes": [{ "src": "/(.*)", "dest": "src/app.ts" }]
+}

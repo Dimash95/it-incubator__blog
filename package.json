@@ -1,0 +1,49 @@
+{
+  "name": "it-incubator_hw-1",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "yarn install && tsc",
+    "start": "node dist/app.js",
+    "start:dev": "nodemon --exec node --inspect -r ts-node/register src/app.ts",
+    "jest": "jest",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "tsc -w"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dimash95/it-incubator-hw-1.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dimash95/it-incubator-hw-1/issues"
+  },
+  "homepage": "https://github.com/Dimash95/it-incubator-hw-1#readme",
+  "dependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/jest": "^30.0.0",
+    "@types/supertest": "^6.0.3",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-validator": "^7.3.0",
+    "jest": "^30.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^8.20.1",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.5",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.10.0",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

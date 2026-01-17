@@ -169,11 +169,18 @@ postsRouter.post(
       likesInfo: {
         likesCount: 0,
         dislikesCount: 0,
-        myStatus: LikeStatus.None,
       },
     });
 
-    return res.status(HttpResponses.CREATED).send(newComment);
+    // В ответ добавляем myStatus (но НЕ сохраняем в базу)
+    return res.status(HttpResponses.CREATED).send({
+      ...newComment.toJSON(),
+      likesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeStatus.None, // ← Добавляется только в ответ!
+      },
+    });
   },
 );
 

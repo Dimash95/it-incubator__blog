@@ -166,6 +166,11 @@ postsRouter.post(
         userId: req.user.userId,
         userLogin: req.user.userLogin,
       },
+      likesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeStatus.None,
+      },
     });
 
     return res.status(HttpResponses.CREATED).send(newComment);

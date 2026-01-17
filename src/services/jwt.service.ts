@@ -42,7 +42,7 @@ export class JwtService {
     const token = jwt.sign(payload, REFRESH_TOKEN_SECRET, { expiresIn: "10m" });
 
     const expiresAt = new Date();
-    expiresAt.setSeconds(expiresAt.getSeconds() + 20);
+    expiresAt.setSeconds(expiresAt.getMinutes() + 10);
 
     return { token, tokenId, expiresAt };
   }

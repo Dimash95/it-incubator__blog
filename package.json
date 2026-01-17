@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "yarn install && tsc",
+    "build": "tsc",
     "start": "node dist/app.js",
     "start:dev": "nodemon --exec node --inspect -r ts-node/register src/app.ts",
     "jest": "jest",

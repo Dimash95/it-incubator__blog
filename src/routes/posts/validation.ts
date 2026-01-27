@@ -1,4 +1,5 @@
 import { body } from "express-validator";
+import { LikeStatus } from "./enum";
 
 export const postValidation = [
   body("shortDescription")
@@ -34,4 +35,15 @@ export const postValidation = [
   //   .withMessage("BlogId must be a string")
   //   .notEmpty()
   //   .withMessage("BlogId is required"),
+];
+
+export const putPostLikeValidation = [
+  body("likeStatus")
+    .trim()
+    .isString()
+    .withMessage("content must be a string")
+    .notEmpty()
+    .withMessage("content is required")
+    .isIn(Object.values(LikeStatus)) // ["None", "Like", "Dislike"]
+    .withMessage("likeStatus must be None, Like or Dislike"),
 ];

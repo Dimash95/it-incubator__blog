@@ -1,3 +1,5 @@
+import { LikeStatus } from "./enum";
+
 export type PostType = {
   id: string;
   title: string; // 30
@@ -5,6 +7,18 @@ export type PostType = {
   content: string; // 1000
   blogId: string;
   blogName: string; // 15
+  extendedLikesInfo: {
+    likesCount: number;
+    dislikesCount: number;
+    myStatus: LikeStatus;
+    newestLikes: LikeDetailsType[];
+  };
+};
+
+export type LikeDetailsType = {
+  addedAt: string;
+  userId: string;
+  login: string;
 };
 
 export type PostPostType = {
@@ -20,3 +34,11 @@ export type PutPostType = {
   content: string;
   blogId: string;
 };
+
+export interface PostLikeType {
+  postId: string;
+  userId: string;
+  userLogin: string;
+  status: LikeStatus;
+  addedAt: string;
+}

@@ -6,6 +6,8 @@ import { inputValidation } from "../../middlewares/input-validation";
 import { HttpResponses } from "../../const";
 import { PostModel } from "../posts/model";
 import { postValidation } from "../posts/validation";
+import { LikeStatus } from "../posts/enum";
+import { getExtendedLikesInfo } from "../posts";
 
 export const blogsRouter = express.Router();
 
@@ -44,7 +46,21 @@ blogsRouter.get("/:blogId/posts", async (req, res) => {
 
   const filteredPosts = posts.slice(
     (pageNumber - 1) * pageSize,
-    (pageNumber - 1) * pageSize + pageSize
+    (pageNumber - 1) * pageSize + pageSize,
+  );
+
+  //  для каждого поста формируем extendedLikesInfo
+  const postsWithLikes = await Promise.all(
+    filteredPosts.map(async (post) => {
+      const extendedLikesInfo = await getExtendedLikesInfo(
+        post._id.toString(),
+        null,
+      );
+      return {
+        ...post.toJSON(),
+        extendedLikesInfo,
+      };
+    }),
   );
 
   const result = {
@@ -52,7 +68,7 @@ blogsRouter.get("/:blogId/posts", async (req, res) => {
     page: pageNumber,
     pageSize,
     totalCount,
-    items: filteredPosts,
+    items: postsWithLikes,
   };
 
   return res.status(HttpResponses.OK).send(result);
@@ -97,7 +113,7 @@ blogsRouter.get("/", async (req: Request, res: Response) => {
 
   const filteredBlogs = blogs.slice(
     (pageNumber - 1) * pageSize,
-    (pageNumber - 1) * pageSize + pageSize
+    (pageNumber - 1) * pageSize + pageSize,
   );
 
   const result = {
@@ -144,8 +160,17 @@ blogsRouter.post(
       blogName: blog.name,
     });
 
-    return res.status(HttpResponses.CREATED).send(newPost);
-  }
+    //добавляем extendedLikesInfo в ответ
+    return res.status(HttpResponses.CREATED).send({
+      ...newPost.toJSON(),
+      extendedLikesInfo: {
+        likesCount: 0,
+        dislikesCount: 0,
+        myStatus: LikeStatus.None,
+        newestLikes: [],
+      },
+    });
+  },
 );
 
 blogsRouter.post(
@@ -163,7 +188,7 @@ blogsRouter.post(
     });
 
     return res.status(HttpResponses.CREATED).send(blog);
-  }
+  },
 );
 
 blogsRouter.put(
@@ -181,7 +206,7 @@ blogsRouter.put(
         description,
         websiteUrl,
       },
-      { new: true }
+      { new: true },
     );
 
     if (!updated)
@@ -195,7 +220,7 @@ blogsRouter.put(
       });
 
     return res.sendStatus(HttpResponses.NO_CONTENT);
-  }
+  },
 );
 
 blogsRouter.delete("/:id", basicAuth, async (req: Request, res: Response) => {

@@ -13,7 +13,10 @@ import { LikeStatus } from "../comments/enum";
 
 export const postsRouter = express.Router();
 
-async function getExtendedLikesInfo(postId: string, userId: string | null) {
+export async function getExtendedLikesInfo(
+  postId: string,
+  userId: string | null,
+) {
   const post = await PostModel.findById(postId);
 
   if (!post) return null;
@@ -29,7 +32,7 @@ async function getExtendedLikesInfo(postId: string, userId: string | null) {
     postId,
     status: LikeStatus.Like,
   })
-    .sort({ createdAt: -1 })
+    .sort({ addedAt: -1 })
     .limit(3)
     .lean();
 

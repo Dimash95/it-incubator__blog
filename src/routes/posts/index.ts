@@ -167,7 +167,7 @@ postsRouter.get("/", async (req: Request, res: Response) => {
   const sortCreatedAt = () => (sortDirection === "asc" ? "asc" : "desc");
 
   const posts = await PostModel.find().sort({
-    [`${sortBy}`]: sortCreatedAt(),
+    [String(sortBy)]: sortCreatedAt(),
   });
 
   const totalCount = posts.length;

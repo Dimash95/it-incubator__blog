@@ -144,7 +144,10 @@ postsRouter.get("/:id", async (req: Request, res: Response) => {
   }
 
   // формируем extendedLikesInfo
-  const extendedLikesInfo = await getExtendedLikesInfo(req.params.id, userId);
+  const extendedLikesInfo = await getExtendedLikesInfo(
+    String(req.params.id),
+    userId,
+  );
 
   // добавляем extendedLikesInfo в ответ
   return res.status(HttpResponses.OK).send({
@@ -167,7 +170,7 @@ postsRouter.get("/", async (req: Request, res: Response) => {
   const sortCreatedAt = () => (sortDirection === "asc" ? "asc" : "desc");
 
   const posts = await PostModel.find().sort({
-    [String(sortBy)]: sortCreatedAt(),
+    [`${sortBy}`]: sortCreatedAt(),
   });
 
   const totalCount = posts.length;

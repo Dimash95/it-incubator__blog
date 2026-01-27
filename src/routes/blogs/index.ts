@@ -8,6 +8,7 @@ import { PostModel } from "../posts/model";
 import { postValidation } from "../posts/validation";
 import { LikeStatus } from "../posts/enum";
 import { getExtendedLikesInfo } from "../posts";
+import { jwtService } from "../../services/jwt.service";
 
 export const blogsRouter = express.Router();
 
@@ -49,12 +50,20 @@ blogsRouter.get("/:blogId/posts", async (req, res) => {
     (pageNumber - 1) * pageSize + pageSize,
   );
 
+  const token = req.headers.authorization?.split(" ")[1];
+  let userId: string | null = null;
+
+  if (token) {
+    const payload = jwtService.verifyAccessToken(token);
+    userId = payload?.userId || null;
+  }
+
   //  для каждого поста формируем extendedLikesInfo
   const postsWithLikes = await Promise.all(
     filteredPosts.map(async (post) => {
       const extendedLikesInfo = await getExtendedLikesInfo(
         post._id.toString(),
-        null,
+        userId,
       );
       return {
         ...post.toJSON(),
@@ -136,8 +145,6 @@ blogsRouter.post(
     const { blogId } = req.params;
 
     const blog = await BlogModel.findById(blogId);
-    console.log(blogId);
-    console.log(blog);
 
     if (!blog) {
       return res.status(HttpResponses.NOT_FOUND).send({
